@@ -43,9 +43,12 @@ t2 = datetime.now()
 
 total = t2-t1
 
-print('Scanning completed in : ', total)
+# print('Scanning completed in : ', total)
 
 poison = int(input("Enter port to poision : "))
+
+popen = subprocess.Popen(['lsof'],['-i'],shell=False,stdout=subprocess.PIPE)
+(data, err) = popen.communicate()
 
 
 
