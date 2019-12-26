@@ -5,51 +5,63 @@ import os
 import re
 from datetime import datetime
 
-subprocess.call('clear',shell=True)
+def check(ports,poison):
+    for p in ports:
+        if p==poison:
+            return True
+    return False
+    
+def scan():
+    p1 = int(input("Initial port range = "))
+    p2 = int(input("Final port range = "))
 
-p1 = int(input("Initial port range = "))
-p2 = int(input("Final port range = "))
+    ports = []
 
-ports = []
+    remoteServer = str(input("Enter Remote Server : "))
+    remoteServerIP = socket.gethostbyname(remoteServer)
 
-remoteServer = str(input("Enter Remote Server : "))
-remoteServerIP = socket.gethostbyname(remoteServer)
+    print("-" * 60)
+    print("Please wait, scanning remote host", remoteServerIP)
+    print("-" * 60)
 
-print("-" * 60)
-print("Please wait, scanning remote host", remoteServerIP)
-print("-" * 60)
+    t1 = datetime.now()
 
-t1 = datetime.now()
+    try:
+        for port in range(p1,p2):
+            sock = socket.socket(socket.AF_INET,
+            socket.SOCK_STREAM)
+            result = sock.connect_ex((remoteServerIP, port))
+            if result == 0:
+                print("Port {}: 	 Open".format(port))
+                ports.append(port)
+            sock.close()
+    except KeyboardInterrupt:
+        print("You pressed Ctrl+C")
+        sys.exit()
+    except socket.gaierror:
+        print('Hostname could not be resolved. Exiting')
+        sys.exit()
+    except socket.error:
+        print("Couldnt connect to server")
+        sys.exit()
 
-try:
-    for port in range(p1,p2):
-        sock = socket.socket(socket.AF_INET,
-        socket.SOCK_STREAM)
-        result = sock.connect_ex((remoteServerIP, port))
-        if result == 0:
-            print("Port {}: 	 Open".format(port))
-            ports.append(port)
-        sock.close()
-except KeyboardInterrupt:
-    print("You pressed Ctrl+C")
-    sys.exit()
-except socket.gaierror:
-    print('Hostname could not be resolved. Exiting')
-    sys.exit()
-except socket.error:
-    print("Couldnt connect to server")
-    sys.exit()
-t2 = datetime.now()
+    t2 = datetime.now()
+    total = t2-t1
+    print('Scanning completed in : ', total)
+    return ports
 
-total = t2-t1
+def main():
+    subprocess.call('clear',shell=True)
+    
+    # ports = scan()
 
-print('Scanning completed in : ', total)
+    poison = str(input("Enter port to poision : "))
+    
+    cmd = "lsof -i :{}".format(poison)
+    output = subprocess.check_output(cmd, shell=True)
+    r = list(output.split(' '))
+    print(r)
+     
 
-poison = str(input("Enter port to poision : "))
 
-# popen = subprocess.Popen(['lsof','-i :',poison],shell=False)#,stdout=subprocess.PIPE)
-# (data, err) = popen.communicate()
-
-sub = "lsof -i :{}".format(poison)
-os.system(sub)
-
+if __name__ == "__main__": main()
