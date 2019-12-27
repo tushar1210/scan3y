@@ -58,7 +58,7 @@ def main():
     poison = str(input("Enter port to poision : "))
     
     cmd = "lsof -i :{}".format(poison)
-    output = subprocess.check_output(cmd, shell=True)
+    output = subprocess.run(cmd, shell=True,capture_output=True)
     r = list(output.split(' '))
     print(r)
      
