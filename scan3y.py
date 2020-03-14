@@ -4,6 +4,7 @@ import sys
 import os
 import re
 from datetime import datetime
+import shlex
 
 def check(ports,poison):
     for p in ports:
@@ -55,13 +56,24 @@ def scan():
 def main():
     subprocess.call('clear',shell=True)
     
-    ports = scan()
-    poison = str(input("Enter port to poision : "))
+    #ports = scan()
+    poison = 50
     
     cmd = "lsof -i :{}".format(poison)
-    output = subprocess.check_output(cmd, shell=True)
+    args = shlex.split(cmd)
+    output,error = subprocess.Popen(args,stdout = subprocess.PIPE, stderr= subprocess.PIPE).communicate()
+    output=str(output)
+    pid = ''
     # r = list(output.split(' '))
-    print(type(output))
+    for i in range(len(output)):
+        if output[i]>='0' and output[i]<='9':
+            while output[i]>='0' and output[i]<='9':
+                pid+=output[i]
+                i+=1
+            break    
+    # print(output)
+    
+    print(int(pid))
     
 
 
