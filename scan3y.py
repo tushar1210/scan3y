@@ -34,6 +34,8 @@ def scan():
             if result == 0:
                 print("Port {}: 	 Open".format(port))
                 ports.append(port)
+            # if ports != []:
+            #     print(ports)
             sock.close()
     except KeyboardInterrupt:
         print("You pressed Ctrl+C")
@@ -53,15 +55,14 @@ def scan():
 def main():
     subprocess.call('clear',shell=True)
     
-    # ports = scan()
-
+    ports = scan()
     poison = str(input("Enter port to poision : "))
     
     cmd = "lsof -i :{}".format(poison)
     output = subprocess.check_output(cmd, shell=True)
-    r = list(output.split(' '))
-    print(r)
-     
+    # r = list(output.split(' '))
+    print(type(output))
+    
 
 
 if __name__ == "__main__": main()
