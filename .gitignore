@@ -2,3 +2,4 @@
 example/node_modules
 .log
 .vscode
+__pycache__

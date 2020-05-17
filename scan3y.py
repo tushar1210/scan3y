@@ -6,7 +6,7 @@ import re
 from datetime import datetime
 import shlex
 import logging
-from daemon import daemon
+import time
 
 def check(ports,poison):
     for p in ports:
@@ -16,7 +16,7 @@ def check(ports,poison):
     
 def scan():
     p1 = 1 #int(input("Initial port range = "))
-    p2 = 1000 #int(input("Final port range = "))
+    p2 = 100 #int(input("Final port range = "))
     ports = []
     remoteServer = "localhost"#str(input("Enter Remote Server : "))
     remoteServerIP = socket.gethostbyname(remoteServer)
@@ -36,6 +36,7 @@ def scan():
             sock.close()
     except KeyboardInterrupt:
         f.write('Script Terminated \n')
+        f.close()
         sys.exit()
     except socket.gaierror:
         f.write('Hostname could not be resolved. Exiting \n')
@@ -49,16 +50,16 @@ def scan():
     f.write('Scanning completed in : {}  {}'.format(total ,'\n'))
     return ports
 
-f=open('.log','a')
-
+f=open('.log','a+')
 def main():
     while(True):
+        # with open("file.txt", "w") as f:
         f.write('-'*60 + '\n' +' '*25 + 'New Session'+'\n')
-        subprocess.call('clear',shell=True)
         ports = scan()
-        # poison = str(input('Enter the port '))
         if ports==[]:
             f.write('No open ports found \n')
+        else:
+            f.write('ports found are : {} \n'.format(ports))
         for poison in ports:
             cmd = "lsof -i :{}".format(poison)
             args = shlex.split(cmd)
@@ -80,5 +81,7 @@ def main():
             output,error = subprocess.Popen(args,stdout = subprocess.PIPE, stderr=subprocess.PIPE).communicate()
             if(error):
                 f.write('Error found : {}'.format(str(error)))
+            os.fsync(f)
+    
 
 if __name__ == "__main__": main()
