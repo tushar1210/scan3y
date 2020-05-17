@@ -70,13 +70,14 @@ def main():
                     pid+=output[i]
                     i+=1
                 break
-        f.write(output)
+        
         f.write('\n')
         cmd = "kill -9 {}".format(pid)
-        f.write(pid)
+        f.write('PID found : {} \n'.format(pid))
         f.write('\n')
         args = shlex.split(cmd)
-        output,error = subprocess.Popen(args,stdout = subprocess.PIPE, stderr= subprocess.PIPE).communicate()
-        f.write(output)
+        output,error = subprocess.Popen(args,stdout = subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+        if(error):
+            f.write('Error found : {}'.format(str(error)))
 
 if __name__ == "__main__": main()
