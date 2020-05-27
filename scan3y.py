@@ -18,7 +18,7 @@ def scan():
     p1 = 1 #int(input("Initial port range = "))
     p2 = 100 #int(input("Final port range = "))
     ports = []
-    remoteServer = "localhost"#str(input("Enter Remote Server : "))
+    remoteServer = "localhost" #str(input("Enter Remote Server : "))
     remoteServerIP = socket.gethostbyname(remoteServer)
     # print("-" * 60)
     f.write("Scanning remote host  {} \n".format(remoteServerIP))
@@ -72,6 +72,7 @@ def main():
                         pid+=output[i]
                         i+=1
                     break
+                
             
             f.write('\n')
             cmd = "kill -9 {}".format(pid)
@@ -82,6 +83,6 @@ def main():
             if(error):
                 f.write('Error found : {}'.format(str(error)))
             os.fsync(f)
-    
+
 
 if __name__ == "__main__": main()
